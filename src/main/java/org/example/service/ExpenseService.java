@@ -32,6 +32,10 @@ public class ExpenseService {
             case "/start":
                 outcomeMessage.setText(ConstantReplyText.START_TEXT);
                 break;
+            case "/show_all":
+                outcomeMessage.setText(dbProcessor.showAll());
+                break;
+
             default:
                 outcomeMessage = customText(update);
         }
@@ -98,23 +102,27 @@ public class ExpenseService {
 
     public EditMessageText processCallbackQuery(Update update) {
 
-        String callbackData = update.getCallbackQuery().getData();
+        String incomeCallbackData = update.getCallbackQuery().getData();
         EditMessageText editMessageText = new EditMessageText();
-
         editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
         editMessageText.setChatId(update.getCallbackQuery().getMessage().getChatId());
 
-
-        CallbackData callbackData1 = new CallbackData(callbackData);
-        String callbackText = callbackData1.getButtonText();
-        switch (callbackData1.getButtonText()) {
+        CallbackData outcomeCallbackData = new CallbackData(incomeCallbackData);
+        switch (outcomeCallbackData.getButtonText()) {
             case ConstantReplyButton.CATEGORY_YES_BUTTON_TEXT:
+                outcomeCallbackData.setButtonText(ConstantCategories.CLOTHES_BUTTON);
+
                 List<InlineKeyboardButton> buttons = new ArrayList<>();
-                buttons.add(createInlineButton(ConstantReplyButton.CLOTHES_BUTTON, callbackData));
-                buttons.add(createInlineButton(ConstantReplyButton.MEDICINE_BUTTON, callbackData));
-                buttons.add(createInlineButton(ConstantReplyButton.RENT_BUTTON, callbackData));
-                buttons.add(createInlineButton(ConstantReplyButton.OTHER_BUTTON, callbackData));
-                buttons.add(createInlineButton(ConstantReplyButton.FOOD_BUTTON, callbackData));
+                outcomeCallbackData.setButtonText(ConstantCategories.CLOTHES_BUTTON);
+                buttons.add(createInlineButton(ConstantCategories.CLOTHES_BUTTON, outcomeCallbackData.toString()));
+                outcomeCallbackData.setButtonText(ConstantCategories.FOOD_BUTTON);
+                buttons.add(createInlineButton(ConstantCategories.FOOD_BUTTON, outcomeCallbackData.toString()));
+                outcomeCallbackData.setButtonText(ConstantCategories.MEDICINE_BUTTON);
+                buttons.add(createInlineButton(ConstantCategories.MEDICINE_BUTTON, outcomeCallbackData.toString()));
+                outcomeCallbackData.setButtonText(ConstantCategories.RENT_BUTTON);
+                buttons.add(createInlineButton(ConstantCategories.RENT_BUTTON, outcomeCallbackData.toString()));
+                outcomeCallbackData.setButtonText(ConstantCategories.OTHER_BUTTON);
+                buttons.add(createInlineButton(ConstantCategories.OTHER_BUTTON, outcomeCallbackData.toString()));
 
                 editMessageText.setText(ConstantReplyText.CATEGORY_TEXT);
 
@@ -123,6 +131,25 @@ public class ExpenseService {
                 editMessageText.setReplyMarkup(inlineKeyboardMarkup);
 
                 break;
+            case ConstantReplyButton.CATEGORY_NO_BUTTON_TEXT:
+                if (dbProcessor.categoryUpdated(outcomeCallbackData.getExpenseId(), ConstantCategories.NO_CATEGORY)) {
+                    editMessageText.setText(ConstantReplyText.SAVED_NO_CATEGORY);
+                } else
+                    editMessageText.setText(ConstantReplyText.SAVE_CATEGORY_FAILURE);
+                break;
+
+            case ConstantCategories.CLOTHES_BUTTON:
+            case ConstantCategories.FOOD_BUTTON:
+            case ConstantCategories.MEDICINE_BUTTON:
+            case ConstantCategories.RENT_BUTTON:
+            case ConstantCategories.OTHER_BUTTON:
+                if (dbProcessor.categoryUpdated(outcomeCallbackData.getExpenseId(), outcomeCallbackData.getButtonText())) {
+                    editMessageText.setText(ConstantReplyText.CATEGORY_SAVED_TEXT + outcomeCallbackData.getButtonText());
+                } else
+                    editMessageText.setText(ConstantReplyText.SAVE_CATEGORY_FAILURE);
+                break;
+
+
         }
         return editMessageText;
     }

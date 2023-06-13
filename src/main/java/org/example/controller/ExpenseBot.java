@@ -42,7 +42,6 @@ public class ExpenseBot extends TelegramLongPollingBot {
         }
         if (update.hasCallbackQuery()) {
             log.debug(update.getCallbackQuery().getData());
-            System.out.println("Callback data " + update.getCallbackQuery().getData());
 
             EditMessageText editMessageText = expenseService.processCallbackQuery(update);
             replyChangeOldMessage((editMessageText));
