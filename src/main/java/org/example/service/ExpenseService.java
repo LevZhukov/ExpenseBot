@@ -1,11 +1,129 @@
 package org.example.service;
 
 import lombok.extern.log4j.Log4j;
-import org.example.expense.ExpenseRepository;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @Log4j
 public class ExpenseService {
-    private ExpenseRepository expenseRepository;
+    private DBProcessor dbProcessor;
+    private CallbackData callbackData;
+
+    public ExpenseService(DBProcessor dbProcessor, CallbackData callbackData) {
+        this.dbProcessor = dbProcessor;
+        this.callbackData = callbackData;
+    }
+
+    public SendMessage processMessage(Update update) {
+        Message incomeMessage = update.getMessage();
+        SendMessage outcomeMessage = new SendMessage();
+        outcomeMessage.setChatId(incomeMessage.getChatId().toString());
+        switch (incomeMessage.getText()) {
+            case "/start":
+                outcomeMessage.setText(ConstantReplyText.START_TEXT);
+                break;
+            default:
+                outcomeMessage = customText(update);
+        }
+        outcomeMessage.setChatId(update.getMessage().getChatId().toString());
+        return outcomeMessage;
+    }
+
+    public SendMessage customText(Update update) {
+        SendMessage outcomeMessage = new SendMessage();
+        Integer id = dbProcessor.addRecord(update);
+        if (id > 0) {
+            outcomeMessage.setText(ConstantReplyText.SAVED_SUM_TEXT);
+
+            CallbackData callbackData1 = new CallbackData(ConstantReplyButton.CATEGORY_YES_BUTTON_TEXT, id, false);
+            CallbackData callbackData2 = new CallbackData(ConstantReplyButton.CATEGORY_NO_BUTTON_TEXT, id, false);
+            InlineKeyboardButton button1 = createInlineButton(ConstantReplyButton.CATEGORY_YES_BUTTON_TEXT, callbackData1.toString());
+            InlineKeyboardButton button2 = createInlineButton(ConstantReplyButton.CATEGORY_NO_BUTTON_TEXT, callbackData2.toString());
+
+            List<InlineKeyboardButton> listButtons = new ArrayList<>();
+            listButtons.add(button1);
+            listButtons.add(button2);
+
+            InlineKeyboardMarkup inlineKeyboardMarkup = createKeyboard(listButtons);
+
+            outcomeMessage.setReplyMarkup(inlineKeyboardMarkup);
+        } else {
+            outcomeMessage.setText(ConstantReplyText.SAVING_FAILURE_TEXT);
+        }
+
+        return outcomeMessage;
+    }
+
+    private List<List<InlineKeyboardButton>> splitToRows(List<InlineKeyboardButton> buttonList, int charsInLine) {
+        List<List<InlineKeyboardButton>> buttonRowsList = new ArrayList<>();
+        int length = 0;
+        int rowsCount = -1;
+        for (int i = 0; i < buttonList.size(); i++) {
+            if (i == 0 || length + buttonList.get(i).getText().length() > charsInLine) {
+                List<InlineKeyboardButton> list = new ArrayList<>();
+                buttonRowsList.add(list);
+                rowsCount++;
+                length = 0;
+            }
+            buttonRowsList.get(rowsCount).add(buttonList.get(i));
+            length += buttonList.get(i).getText().length();
+        }
+        return buttonRowsList;
+    }
+
+    private InlineKeyboardButton createInlineButton(String text, String callbackData) {
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+        inlineKeyboardButton.setText(text);
+        inlineKeyboardButton.setCallbackData(callbackData);
+        return inlineKeyboardButton;
+    }
+
+    private InlineKeyboardMarkup createKeyboard(List<InlineKeyboardButton> buttonList) {
+        List<List<InlineKeyboardButton>> rows = splitToRows(buttonList, 20);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+
+    public EditMessageText processCallbackQuery(Update update) {
+
+        String callbackData = update.getCallbackQuery().getData();
+        EditMessageText editMessageText = new EditMessageText();
+
+        editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+        editMessageText.setChatId(update.getCallbackQuery().getMessage().getChatId());
+
+
+        CallbackData callbackData1 = new CallbackData(callbackData);
+        String callbackText = callbackData1.getButtonText();
+        switch (callbackData1.getButtonText()) {
+            case ConstantReplyButton.CATEGORY_YES_BUTTON_TEXT:
+                List<InlineKeyboardButton> buttons = new ArrayList<>();
+                buttons.add(createInlineButton(ConstantReplyButton.CLOTHES_BUTTON, callbackData));
+                buttons.add(createInlineButton(ConstantReplyButton.MEDICINE_BUTTON, callbackData));
+                buttons.add(createInlineButton(ConstantReplyButton.RENT_BUTTON, callbackData));
+                buttons.add(createInlineButton(ConstantReplyButton.OTHER_BUTTON, callbackData));
+                buttons.add(createInlineButton(ConstantReplyButton.FOOD_BUTTON, callbackData));
+
+                editMessageText.setText(ConstantReplyText.CATEGORY_TEXT);
+
+                InlineKeyboardMarkup inlineKeyboardMarkup = createKeyboard(buttons);
+
+                editMessageText.setReplyMarkup(inlineKeyboardMarkup);
+
+                break;
+        }
+        return editMessageText;
+    }
 }
