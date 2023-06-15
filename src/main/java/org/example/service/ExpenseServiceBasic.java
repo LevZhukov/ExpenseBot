@@ -15,11 +15,11 @@ import java.util.List;
 
 @Service
 @Log4j
-public class ExpenseService {
+public class ExpenseServiceBasic implements ExpenseServiceInterface {
     private DBProcessor dbProcessor;
     private CallbackData callbackData;
 
-    public ExpenseService(DBProcessor dbProcessor, CallbackData callbackData) {
+    public ExpenseServiceBasic(DBProcessor dbProcessor, CallbackData callbackData) {
         this.dbProcessor = dbProcessor;
         this.callbackData = callbackData;
     }
