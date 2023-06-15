@@ -16,15 +16,17 @@ import java.util.List;
 @Service
 @Log4j
 public class ExpenseServiceBasic implements ExpenseServiceInterface {
-    private DBProcessor dbProcessor;
-    private CallbackData callbackData;
+    private final DBProcessor dbProcessor;
+    private final CallbackData callbackData;
+    private final Keyboard keyboard;
 
-    public ExpenseServiceBasic(DBProcessor dbProcessor, CallbackData callbackData) {
+    public ExpenseServiceBasic(DBProcessor dbProcessor, CallbackData callbackData, Keyboard keyboard) {
         this.dbProcessor = dbProcessor;
         this.callbackData = callbackData;
+        this.keyboard = keyboard;
     }
 
-    public SendMessage processMessage(Update update) {
+    public SendMessage processPreDefinedMessage(Update update) {
         Message incomeMessage = update.getMessage();
         SendMessage outcomeMessage = new SendMessage();
         outcomeMessage.setChatId(incomeMessage.getChatId().toString());
@@ -37,13 +39,13 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
                 break;
 
             default:
-                outcomeMessage = customText(update);
+                outcomeMessage = processCustomTextMessage(update);
         }
         outcomeMessage.setChatId(update.getMessage().getChatId().toString());
         return outcomeMessage;
     }
 
-    public SendMessage customText(Update update) {
+    public SendMessage processCustomTextMessage(Update update) {
         SendMessage outcomeMessage = new SendMessage();
         Integer id = dbProcessor.addRecord(update);
         if (id > 0) {
@@ -51,14 +53,14 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
             CallbackData callbackData1 = new CallbackData(ConstantReplyButton.CATEGORY_YES_BUTTON_TEXT, id, false);
             CallbackData callbackData2 = new CallbackData(ConstantReplyButton.CATEGORY_NO_BUTTON_TEXT, id, false);
-            InlineKeyboardButton button1 = createInlineButton(ConstantReplyButton.CATEGORY_YES_BUTTON_TEXT, callbackData1.toString());
-            InlineKeyboardButton button2 = createInlineButton(ConstantReplyButton.CATEGORY_NO_BUTTON_TEXT, callbackData2.toString());
+            InlineKeyboardButton button1 = keyboard.createInlineButton(ConstantReplyButton.CATEGORY_YES_BUTTON_TEXT, callbackData1.toString());
+            InlineKeyboardButton button2 = keyboard.createInlineButton(ConstantReplyButton.CATEGORY_NO_BUTTON_TEXT, callbackData2.toString());
 
             List<InlineKeyboardButton> listButtons = new ArrayList<>();
             listButtons.add(button1);
             listButtons.add(button2);
 
-            InlineKeyboardMarkup inlineKeyboardMarkup = createKeyboard(listButtons);
+            InlineKeyboardMarkup inlineKeyboardMarkup = keyboard.createKeyboard(listButtons);
 
             outcomeMessage.setReplyMarkup(inlineKeyboardMarkup);
         } else {
@@ -67,38 +69,6 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
         return outcomeMessage;
     }
-
-    private List<List<InlineKeyboardButton>> splitToRows(List<InlineKeyboardButton> buttonList, int charsInLine) {
-        List<List<InlineKeyboardButton>> buttonRowsList = new ArrayList<>();
-        int length = 0;
-        int rowsCount = -1;
-        for (int i = 0; i < buttonList.size(); i++) {
-            if (i == 0 || length + buttonList.get(i).getText().length() > charsInLine) {
-                List<InlineKeyboardButton> list = new ArrayList<>();
-                buttonRowsList.add(list);
-                rowsCount++;
-                length = 0;
-            }
-            buttonRowsList.get(rowsCount).add(buttonList.get(i));
-            length += buttonList.get(i).getText().length();
-        }
-        return buttonRowsList;
-    }
-
-    private InlineKeyboardButton createInlineButton(String text, String callbackData) {
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-        inlineKeyboardButton.setText(text);
-        inlineKeyboardButton.setCallbackData(callbackData);
-        return inlineKeyboardButton;
-    }
-
-    private InlineKeyboardMarkup createKeyboard(List<InlineKeyboardButton> buttonList) {
-        List<List<InlineKeyboardButton>> rows = splitToRows(buttonList, 20);
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(rows);
-        return inlineKeyboardMarkup;
-    }
-
 
     public EditMessageText processCallbackQuery(Update update) {
 
@@ -114,19 +84,19 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
                 List<InlineKeyboardButton> buttons = new ArrayList<>();
                 outcomeCallbackData.setButtonText(ConstantCategories.CLOTHES_BUTTON);
-                buttons.add(createInlineButton(ConstantCategories.CLOTHES_BUTTON, outcomeCallbackData.toString()));
+                buttons.add(keyboard.createInlineButton(ConstantCategories.CLOTHES_BUTTON, outcomeCallbackData.toString()));
                 outcomeCallbackData.setButtonText(ConstantCategories.FOOD_BUTTON);
-                buttons.add(createInlineButton(ConstantCategories.FOOD_BUTTON, outcomeCallbackData.toString()));
+                buttons.add(keyboard.createInlineButton(ConstantCategories.FOOD_BUTTON, outcomeCallbackData.toString()));
                 outcomeCallbackData.setButtonText(ConstantCategories.MEDICINE_BUTTON);
-                buttons.add(createInlineButton(ConstantCategories.MEDICINE_BUTTON, outcomeCallbackData.toString()));
+                buttons.add(keyboard.createInlineButton(ConstantCategories.MEDICINE_BUTTON, outcomeCallbackData.toString()));
                 outcomeCallbackData.setButtonText(ConstantCategories.RENT_BUTTON);
-                buttons.add(createInlineButton(ConstantCategories.RENT_BUTTON, outcomeCallbackData.toString()));
+                buttons.add(keyboard.createInlineButton(ConstantCategories.RENT_BUTTON, outcomeCallbackData.toString()));
                 outcomeCallbackData.setButtonText(ConstantCategories.OTHER_BUTTON);
-                buttons.add(createInlineButton(ConstantCategories.OTHER_BUTTON, outcomeCallbackData.toString()));
+                buttons.add(keyboard.createInlineButton(ConstantCategories.OTHER_BUTTON, outcomeCallbackData.toString()));
 
                 editMessageText.setText(ConstantReplyText.CATEGORY_TEXT);
 
-                InlineKeyboardMarkup inlineKeyboardMarkup = createKeyboard(buttons);
+                InlineKeyboardMarkup inlineKeyboardMarkup = keyboard.createKeyboard(buttons);
 
                 editMessageText.setReplyMarkup(inlineKeyboardMarkup);
 
@@ -148,7 +118,6 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
                 } else
                     editMessageText.setText(ConstantReplyText.SAVE_CATEGORY_FAILURE);
                 break;
-
 
         }
         return editMessageText;

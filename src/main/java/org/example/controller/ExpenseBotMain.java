@@ -38,7 +38,7 @@ public class ExpenseBotMain extends TelegramLongPollingBot implements ExpenseBot
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             log.debug(update.getMessage().getText());
-            SendMessage outcomeMessage = expenseService.processMessage(update);
+            SendMessage outcomeMessage = expenseService.processPreDefinedMessage(update);
             replyNewMessage(outcomeMessage);
         }
         if (update.hasCallbackQuery()) {
