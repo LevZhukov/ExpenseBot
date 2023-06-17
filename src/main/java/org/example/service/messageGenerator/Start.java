@@ -1,5 +1,6 @@
-package org.example.service;
+package org.example.service.messageGenerator;
 
+import org.example.service.constants.ConstantReplyText;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;

@@ -1,4 +1,4 @@
-package org.example.service;
+package org.example.service.constants;
 
 public enum ConstantReplyText {
     START_TEXT("Я бот - трекер расходов. Я веду историю Ваших трат.\n" +

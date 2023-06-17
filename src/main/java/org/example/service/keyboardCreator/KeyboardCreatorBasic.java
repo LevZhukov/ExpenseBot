@@ -1,4 +1,4 @@
-package org.example.service;
+package org.example.service.keyboardCreator;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class KeyboardBasic implements Keyboard {
+public class KeyboardCreatorBasic implements KeyboardCreator {
 
     public InlineKeyboardButton createInlineButton(String text, String callbackData) {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();

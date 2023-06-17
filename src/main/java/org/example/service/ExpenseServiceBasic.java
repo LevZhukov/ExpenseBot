@@ -1,6 +1,10 @@
 package org.example.service;
 
 import lombok.extern.log4j.Log4j;
+import org.example.service.keyboardCreator.KeyboardCreator;
+import org.example.service.messageChanger.MessageChanger;
+import org.example.service.messageGenerator.CustomMessage;
+import org.example.service.messageGenerator.MessageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,7 +20,7 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
     private final DBProcessor dbProcessor;
     private final CallbackData callbackData;
-    private final Keyboard keyboard;
+    private final KeyboardCreator keyboardCreator;
 
     @Autowired
     private Map<String, MessageGenerator> mapMessage;
@@ -25,10 +29,10 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
     @Autowired
     private CustomMessage customMessage;
 
-    public ExpenseServiceBasic(DBProcessor dbProcessor, CallbackData callbackData, Keyboard keyboard) {
+    public ExpenseServiceBasic(DBProcessor dbProcessor, CallbackData callbackData, KeyboardCreator keyboardCreator) {
         this.dbProcessor = dbProcessor;
         this.callbackData = callbackData;
-        this.keyboard = keyboard;
+        this.keyboardCreator = keyboardCreator;
     }
 
     public SendMessage processMessage(Update update) {
@@ -44,7 +48,6 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
     public EditMessageText processCallbackQuery(Update update) {
 
-        String incomeCallbackDataText = update.getCallbackQuery().getData();
         CallbackData incomeCallbackData = new  CallbackData(update.getCallbackQuery().getData());
 
         MessageChanger messageChanger = mapChangedMessage.get(incomeCallbackData.getCallbackText());
@@ -54,20 +57,6 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
         changedMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
         changedMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
 
-//            switch (outcomeCallbackData.getButtonText()) {
-//
-//
-//            case ConstantReplyButton.CLOTHES_BUTTON:
-//            case ConstantReplyButton.FOOD_BUTTON:
-//            case ConstantReplyButton.MEDICINE_BUTTON:
-//            case ConstantReplyButton.RENT_BUTTON:
-//            case ConstantReplyButton.NO_CATEGORY:
-//                if (dbProcessor.categoryUpdated(outcomeCallbackData.getExpenseId(), outcomeCallbackData.getButtonText())) {
-//                    changedMessage.setText(ConstantReplyText.CATEGORY_SAVED_TEXT + outcomeCallbackData.getButtonText());
-//                } else
-//                    changedMessage.setText(ConstantReplyText.SAVE_CATEGORY_FAILURE.getText());
-//                break;
-//        }
         return changedMessage;
     }
 }

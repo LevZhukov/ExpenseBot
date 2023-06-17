@@ -1,5 +1,10 @@
-package org.example.service;
+package org.example.service.messageGenerator;
 
+import org.example.service.CallbackData;
+import org.example.service.DBProcessor;
+import org.example.service.keyboardCreator.KeyboardCreator;
+import org.example.service.constants.ConstantReplyButton;
+import org.example.service.constants.ConstantReplyText;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,11 +18,11 @@ import java.util.List;
 public class CustomMessage implements MessageGenerator {
 
     DBProcessor dbProcessor;
-    Keyboard keyboard;
+    KeyboardCreator keyboardCreator;
 
-    public CustomMessage(DBProcessor dbProcessor, Keyboard keyboard) {
+    public CustomMessage(DBProcessor dbProcessor, KeyboardCreator keyboardCreator) {
         this.dbProcessor = dbProcessor;
-        this.keyboard = keyboard;
+        this.keyboardCreator = keyboardCreator;
     }
 
     @Override
@@ -35,14 +40,14 @@ public class CustomMessage implements MessageGenerator {
 
             CallbackData callbackData1 = new CallbackData(ConstantReplyButton.CATEGORY_YES_BUTTON.getLabel(), id, false);
             CallbackData callbackData2 = new CallbackData(ConstantReplyButton.CATEGORY_NO_BUTTON.getLabel(), id, false);
-            InlineKeyboardButton button1 = keyboard.createInlineButton(ConstantReplyButton.CATEGORY_YES_BUTTON.getLabel(), callbackData1.toString());
-            InlineKeyboardButton button2 = keyboard.createInlineButton(ConstantReplyButton.CATEGORY_NO_BUTTON.getLabel(), callbackData2.toString());
+            InlineKeyboardButton button1 = keyboardCreator.createInlineButton(ConstantReplyButton.CATEGORY_YES_BUTTON.getLabel(), callbackData1.toString());
+            InlineKeyboardButton button2 = keyboardCreator.createInlineButton(ConstantReplyButton.CATEGORY_NO_BUTTON.getLabel(), callbackData2.toString());
 
             List<InlineKeyboardButton> listButtons = new ArrayList<>();
             listButtons.add(button1);
             listButtons.add(button2);
 
-            InlineKeyboardMarkup inlineKeyboardMarkup = keyboard.createKeyboard(listButtons);
+            InlineKeyboardMarkup inlineKeyboardMarkup = keyboardCreator.createKeyboard(listButtons);
 
             outcomeMessage.setReplyMarkup(inlineKeyboardMarkup);
         } else {

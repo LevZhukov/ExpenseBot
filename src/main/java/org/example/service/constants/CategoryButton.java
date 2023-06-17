@@ -1,4 +1,4 @@
-package org.example.service;
+package org.example.service.constants;
 
 public enum CategoryButton {
 
