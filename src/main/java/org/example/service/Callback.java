@@ -4,22 +4,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public abstract class Callback {
-    protected String buttonText;
+
+    protected String callbackText;
     protected Integer expenseId;
     protected Boolean toRemove;
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(buttonText + "#" + expenseId.toString() + "#" + toRemove.toString());
-        return stringBuilder.toString();
+        return callbackText + "#" + expenseId.toString() + "#" + toRemove.toString();
     }
-    public String getButtonText() {
-        return buttonText;
+    public String getCallbackText() {
+        return callbackText;
     }
 
-    public void setButtonText(String buttonText) {
-        this.buttonText = buttonText;
+    public void setCallbackText(String callbackText) {
+        this.callbackText = callbackText;
     }
 
     public Integer getExpenseId() {

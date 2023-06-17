@@ -1,10 +1,18 @@
 package org.example.service;
 
-import org.springframework.stereotype.Component;
+public enum ConstantReplyButton {
 
-@Component
-public class ConstantReplyButton {
-    static final String CATEGORY_YES_BUTTON_TEXT = "Да";
-    static final String CATEGORY_NO_BUTTON_TEXT = "Нет";
+    CATEGORY_YES_BUTTON("Да"),
+    CATEGORY_NO_BUTTON("Нет");
+    private String label;
+
+
+    ConstantReplyButton(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 
 }

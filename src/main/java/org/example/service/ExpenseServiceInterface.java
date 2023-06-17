@@ -5,8 +5,8 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface ExpenseServiceInterface {
-    public SendMessage processPreDefinedMessage(Update update);
-    public SendMessage processCustomTextMessage(Update update);
+    public SendMessage processMessage(Update update);
+
     public EditMessageText processCallbackQuery(Update update);
 
 }
