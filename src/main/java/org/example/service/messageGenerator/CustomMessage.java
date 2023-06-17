@@ -2,6 +2,7 @@ package org.example.service.messageGenerator;
 
 import org.example.service.CallbackData;
 import org.example.service.DBProcessor;
+import org.example.service.buttonCreator.ButtonCreator;
 import org.example.service.keyboardCreator.KeyboardCreator;
 import org.example.service.constants.ConstantReplyButton;
 import org.example.service.constants.ConstantReplyText;
@@ -18,17 +19,18 @@ import java.util.List;
 public class CustomMessage implements MessageGenerator {
 
     DBProcessor dbProcessor;
+    ButtonCreator buttonCreator;
     KeyboardCreator keyboardCreator;
 
-    public CustomMessage(DBProcessor dbProcessor, KeyboardCreator keyboardCreator) {
+    public CustomMessage(DBProcessor dbProcessor, KeyboardCreator keyboardCreator, ButtonCreator buttonCreator) {
         this.dbProcessor = dbProcessor;
         this.keyboardCreator = keyboardCreator;
+        this.buttonCreator = buttonCreator;
     }
 
     @Override
     public SendMessage generateMessage(Update update) {
         SendMessage message = processCustomTextMessage(update);
-
         return message;
     }
 
@@ -36,12 +38,12 @@ public class CustomMessage implements MessageGenerator {
         SendMessage outcomeMessage = new SendMessage();
         Integer id = dbProcessor.addRecord(update);
         if (id > 0) {
-            outcomeMessage.setText(ConstantReplyText.SAVED_SUM_TEXT.getText());
+            outcomeMessage.setText(ConstantReplyText.SAVED_SUM.getText());
 
-            CallbackData callbackData1 = new CallbackData(ConstantReplyButton.CATEGORY_YES_BUTTON.getLabel(), id, false);
-            CallbackData callbackData2 = new CallbackData(ConstantReplyButton.CATEGORY_NO_BUTTON.getLabel(), id, false);
-            InlineKeyboardButton button1 = keyboardCreator.createInlineButton(ConstantReplyButton.CATEGORY_YES_BUTTON.getLabel(), callbackData1.toString());
-            InlineKeyboardButton button2 = keyboardCreator.createInlineButton(ConstantReplyButton.CATEGORY_NO_BUTTON.getLabel(), callbackData2.toString());
+            CallbackData callbackData1 = new CallbackData(ConstantReplyButton.CATEGORY_YES.getLabel(), id, false);
+            CallbackData callbackData2 = new CallbackData(ConstantReplyButton.CATEGORY_NO.getLabel(), id, false);
+            InlineKeyboardButton button1 = buttonCreator.createInlineButton(ConstantReplyButton.CATEGORY_YES.getLabel(), callbackData1.toString());
+            InlineKeyboardButton button2 = buttonCreator.createInlineButton(ConstantReplyButton.CATEGORY_NO.getLabel(), callbackData2.toString());
 
             List<InlineKeyboardButton> listButtons = new ArrayList<>();
             listButtons.add(button1);
@@ -51,7 +53,7 @@ public class CustomMessage implements MessageGenerator {
 
             outcomeMessage.setReplyMarkup(inlineKeyboardMarkup);
         } else {
-            outcomeMessage.setText(ConstantReplyText.SAVING_FAILURE_TEXT.getText());
+            outcomeMessage.setText(ConstantReplyText.SAVING_FAILURE.getText());
         }
 
         return outcomeMessage;

@@ -9,35 +9,37 @@ import java.util.List;
 
 @Component
 public class KeyboardCreatorBasic implements KeyboardCreator {
+    private int numOfCharsInOneLine = 20;
 
-    public InlineKeyboardButton createInlineButton(String text, String callbackData) {
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-        inlineKeyboardButton.setText(text);
-        inlineKeyboardButton.setCallbackData(callbackData);
-        return inlineKeyboardButton;
+    public void setNumOfCharsInOneLine(int numOfCharsInOneLine) {
+        this.numOfCharsInOneLine = numOfCharsInOneLine;
+    }
+
+    public KeyboardCreatorBasic(int numOfCharsInOneLine) {
+        this.numOfCharsInOneLine = numOfCharsInOneLine;
     }
 
     public InlineKeyboardMarkup createKeyboard(List<InlineKeyboardButton> buttonList) {
-        List<List<InlineKeyboardButton>> rows = splitToRows(buttonList, 20);
+        List<List<InlineKeyboardButton>> buttonRows = splitToRows(buttonList, numOfCharsInOneLine);
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(rows);
+        inlineKeyboardMarkup.setKeyboard(buttonRows);
         return inlineKeyboardMarkup;
     }
 
-    private List<List<InlineKeyboardButton>> splitToRows(List<InlineKeyboardButton> buttonList, int charsInLine) {
-        List<List<InlineKeyboardButton>> buttonRowsList = new ArrayList<>();
+    private List<List<InlineKeyboardButton>> splitToRows(List<InlineKeyboardButton> buttons, int charsInLine) {
+        List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
         int length = 0;
         int rowsCount = -1;
-        for (int i = 0; i < buttonList.size(); i++) {
-            if (i == 0 || length + buttonList.get(i).getText().length() > charsInLine) {
+        for (int i = 0; i < buttons.size(); i++) {
+            if (i == 0 || length + buttons.get(i).getText().length() > charsInLine) {
                 List<InlineKeyboardButton> list = new ArrayList<>();
-                buttonRowsList.add(list);
+                buttonRows.add(list);
                 rowsCount++;
                 length = 0;
             }
-            buttonRowsList.get(rowsCount).add(buttonList.get(i));
-            length += buttonList.get(i).getText().length();
+            buttonRows.get(rowsCount).add(buttons.get(i));
+            length += buttons.get(i).getText().length();
         }
-        return buttonRowsList;
+        return buttonRows;
     }
 }

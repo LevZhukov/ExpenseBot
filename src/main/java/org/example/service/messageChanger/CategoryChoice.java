@@ -2,6 +2,7 @@ package org.example.service.messageChanger;
 
 import org.example.service.CallbackData;
 import org.example.service.DBProcessor;
+import org.example.service.buttonCreator.ButtonCreator;
 import org.example.service.keyboardCreator.KeyboardCreator;
 import org.example.service.constants.CategoryButton;
 import org.example.service.constants.ConstantReplyText;
@@ -15,12 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component("Да")
-public class CategoryChoice extends BaseMessage {
+public class CategoryChoice extends AbstractMessage {
     private final KeyboardCreator keyboardCreator;
+    private final ButtonCreator buttonCreator;
 
-    public CategoryChoice(EditMessageText changedMessage, DBProcessor dbProcessor, KeyboardCreator keyboardCreator) {
+    public CategoryChoice(EditMessageText changedMessage, DBProcessor dbProcessor, KeyboardCreator keyboardCreator, ButtonCreator buttonCreator) {
         super(changedMessage, dbProcessor);
         this.keyboardCreator = keyboardCreator;
+        this.buttonCreator = buttonCreator;
     }
 
 
@@ -29,18 +32,18 @@ public class CategoryChoice extends BaseMessage {
         CallbackData outcomeCallbackData = new CallbackData(update.getCallbackQuery().getData());
 
         List<InlineKeyboardButton> buttons = new ArrayList<>();
-        outcomeCallbackData.setCallbackText(CategoryButton.CLOTHES_BUTTON.getLabel());
-        buttons.add(keyboardCreator.createInlineButton(CategoryButton.CLOTHES_BUTTON.getLabel(), outcomeCallbackData.toString()));
-        outcomeCallbackData.setCallbackText(CategoryButton.FOOD_BUTTON.getLabel());
-        buttons.add(keyboardCreator.createInlineButton(CategoryButton.FOOD_BUTTON.getLabel(), outcomeCallbackData.toString()));
-        outcomeCallbackData.setCallbackText(CategoryButton.MEDICINE_BUTTON.getLabel());
-        buttons.add(keyboardCreator.createInlineButton(CategoryButton.MEDICINE_BUTTON.getLabel(), outcomeCallbackData.toString()));
-        outcomeCallbackData.setCallbackText(CategoryButton.RENT_BUTTON.getLabel());
-        buttons.add(keyboardCreator.createInlineButton(CategoryButton.RENT_BUTTON.getLabel(), outcomeCallbackData.toString()));
-        outcomeCallbackData.setCallbackText(CategoryButton.OTHER_BUTTON.getLabel());
-        buttons.add(keyboardCreator.createInlineButton(CategoryButton.OTHER_BUTTON.getLabel(), outcomeCallbackData.toString()));
+        outcomeCallbackData.setCallbackText(CategoryButton.CLOTHES.getLabel());
+        buttons.add(buttonCreator.createInlineButton(CategoryButton.CLOTHES.getLabel(), outcomeCallbackData.toString()));
+        outcomeCallbackData.setCallbackText(CategoryButton.FOOD.getLabel());
+        buttons.add(buttonCreator.createInlineButton(CategoryButton.FOOD.getLabel(), outcomeCallbackData.toString()));
+        outcomeCallbackData.setCallbackText(CategoryButton.MEDICINE.getLabel());
+        buttons.add(buttonCreator.createInlineButton(CategoryButton.MEDICINE.getLabel(), outcomeCallbackData.toString()));
+        outcomeCallbackData.setCallbackText(CategoryButton.RENT.getLabel());
+        buttons.add(buttonCreator.createInlineButton(CategoryButton.RENT.getLabel(), outcomeCallbackData.toString()));
+        outcomeCallbackData.setCallbackText(CategoryButton.OTHER.getLabel());
+        buttons.add(buttonCreator.createInlineButton(CategoryButton.OTHER.getLabel(), outcomeCallbackData.toString()));
 
-        changedMessage.setText(ConstantReplyText.CATEGORY_TEXT.getText());
+        changedMessage.setText(ConstantReplyText.CATEGORY.getText());
 
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardCreator.createKeyboard(buttons);
 

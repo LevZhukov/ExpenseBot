@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
-public abstract class BaseMessage implements MessageChanger {
+public abstract class AbstractMessage implements MessageChanger {
     protected final EditMessageText changedMessage;
     protected final DBProcessor dbProcessor;
 
-    protected BaseMessage(EditMessageText changedMessage, DBProcessor dbProcessor) {
+    protected AbstractMessage(EditMessageText changedMessage, DBProcessor dbProcessor) {
         this.changedMessage = changedMessage;
         this.dbProcessor = dbProcessor;
     }

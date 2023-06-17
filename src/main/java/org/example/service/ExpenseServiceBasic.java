@@ -48,15 +48,13 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
     public EditMessageText processCallbackQuery(Update update) {
 
-        CallbackData incomeCallbackData = new  CallbackData(update.getCallbackQuery().getData());
+        CallbackData incomeCallbackData = new CallbackData(update.getCallbackQuery().getData());
 
         MessageChanger messageChanger = mapChangedMessage.get(incomeCallbackData.getCallbackText());
-
         EditMessageText changedMessage = messageChanger.editMessage(update);
 
         changedMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
         changedMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-
         return changedMessage;
     }
 }

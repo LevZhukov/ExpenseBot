@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component("Нет")
-public class NoCategory extends BaseMessage {
+public class NoCategory extends AbstractMessage {
 
     public NoCategory(EditMessageText changedMessage, DBProcessor dbProcessor) {
         super(changedMessage, dbProcessor);

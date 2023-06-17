@@ -2,11 +2,11 @@ package org.example.service.constants;
 
 public enum CategoryButton {
 
-    FOOD_BUTTON("Продукты"),
-    CLOTHES_BUTTON("Одежда"),
-    RENT_BUTTON("Аренда"),
-    MEDICINE_BUTTON("Медицина"),
-    OTHER_BUTTON("Другое"),
+    FOOD("Продукты"),
+    CLOTHES("Одежда"),
+    RENT("Аренда"),
+    MEDICINE("Медицина"),
+    OTHER("Другое"),
     NO_CATEGORY("Без категории");
     private String label;
 

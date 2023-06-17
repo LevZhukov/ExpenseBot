@@ -9,7 +9,7 @@ public class Start implements MessageGenerator {
     @Override
     public SendMessage generateMessage(Update update) {
         SendMessage message = new SendMessage();
-        message.setText(ConstantReplyText.START_TEXT.getText());
+        message.setText(ConstantReplyText.START.getText());
         return message;
     }
 }
