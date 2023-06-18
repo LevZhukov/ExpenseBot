@@ -1,9 +1,10 @@
-package org.example.service.messageChanger;
+package org.example.service.messageChanger.categories;
 
 import org.example.service.callbackCreator.CallbackData;
 import org.example.service.DBProcessor;
 import org.example.service.constants.CategoryButton;
 import org.example.service.constants.ConstantReplyText;
+import org.example.service.messageChanger.AbstractMessage;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;

@@ -3,7 +3,9 @@ package org.example.service.constants;
 public enum ConstantReplyButton {
 
     CATEGORY_YES("Да"),
-    CATEGORY_NO("Нет");
+    CATEGORY_NO("Нет"),
+    CHECK_NUMBER_BUTTON ("Посмотреть номер"),
+    PROCEED_WITH_REMOVE ("Продолжить удаление");
     private String label;
 
 
