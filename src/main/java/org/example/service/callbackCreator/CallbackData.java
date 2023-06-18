@@ -1,9 +1,9 @@
-package org.example.service;
+package org.example.service.callbackCreator;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class CallbackData extends Callback {
+public class CallbackData extends AbstractCallback {
 
     public CallbackData() {
 

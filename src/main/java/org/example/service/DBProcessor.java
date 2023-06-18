@@ -38,6 +38,7 @@ public class DBProcessor {
         try{
             Expense expense = expenseRepository.findById(id).get();
             expense.setCategory(category);
+            log.debug(category);
             return true;
         }
         catch (Exception e){
@@ -50,7 +51,6 @@ public class DBProcessor {
                 .sorted(Comparator.comparing(Expense::getId))
                 .reduce("", (s, expense) -> s + expense.print(),
                         (s, s2) -> s.concat(s2));
-        log.debug(allRecords);
         return allRecords;
     }
 }

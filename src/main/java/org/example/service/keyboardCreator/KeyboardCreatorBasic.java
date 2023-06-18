@@ -9,13 +9,15 @@ import java.util.List;
 
 @Component
 public class KeyboardCreatorBasic implements KeyboardCreator {
-    private int numOfCharsInOneLine = 20;
+    private Integer numOfCharsInOneLine = 20;
 
-    public void setNumOfCharsInOneLine(int numOfCharsInOneLine) {
+    public void setNumOfCharsInOneLine(Integer numOfCharsInOneLine) {
         this.numOfCharsInOneLine = numOfCharsInOneLine;
     }
 
-    public KeyboardCreatorBasic(int numOfCharsInOneLine) {
+    public KeyboardCreatorBasic(){
+    }
+    public KeyboardCreatorBasic(Integer numOfCharsInOneLine) {
         this.numOfCharsInOneLine = numOfCharsInOneLine;
     }
 

@@ -1,6 +1,9 @@
 package org.example.service;
 
 import lombok.extern.log4j.Log4j;
+import org.example.service.callbackCreator.CallbackCreator;
+import org.example.service.callbackCreator.CallbackData;
+import org.example.service.callbackCreator.CallbackFromString;
 import org.example.service.keyboardCreator.KeyboardCreator;
 import org.example.service.messageChanger.MessageChanger;
 import org.example.service.messageGenerator.CustomMessage;
@@ -18,9 +21,7 @@ import java.util.Map;
 @Log4j
 public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
-    private final DBProcessor dbProcessor;
-    private final CallbackData callbackData;
-    private final KeyboardCreator keyboardCreator;
+    private final CallbackFromString callbackFromString;
 
     @Autowired
     private Map<String, MessageGenerator> mapMessage;
@@ -29,17 +30,17 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
     @Autowired
     private CustomMessage customMessage;
 
-    public ExpenseServiceBasic(DBProcessor dbProcessor, CallbackData callbackData, KeyboardCreator keyboardCreator) {
-        this.dbProcessor = dbProcessor;
-        this.callbackData = callbackData;
-        this.keyboardCreator = keyboardCreator;
+    public ExpenseServiceBasic(CallbackFromString callbackFromString) {
+        this.callbackFromString = callbackFromString;
     }
 
     public SendMessage processMessage(Update update) {
         Message incomeMessage = update.getMessage();
 
         MessageGenerator messageGenerator = mapMessage.get(incomeMessage.getText());
-        messageGenerator = messageGenerator == null ? customMessage : messageGenerator;
+        if(messageGenerator == null){
+            messageGenerator = customMessage;
+        }
 
         SendMessage outcomeMessage = messageGenerator.generateMessage(update);
         outcomeMessage.setChatId(incomeMessage.getChatId().toString());
@@ -48,7 +49,7 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
 
     public EditMessageText processCallbackQuery(Update update) {
 
-        CallbackData incomeCallbackData = new CallbackData(update.getCallbackQuery().getData());
+        CallbackData incomeCallbackData = callbackFromString.stringToCallback(update.getCallbackQuery().getData());
 
         MessageChanger messageChanger = mapChangedMessage.get(incomeCallbackData.getCallbackText());
         EditMessageText changedMessage = messageChanger.editMessage(update);

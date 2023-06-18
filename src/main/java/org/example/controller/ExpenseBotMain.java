@@ -51,7 +51,7 @@ public class ExpenseBotMain extends TelegramLongPollingBot implements ExpenseBot
     public void replyNewMessage(SendMessage message) {
         try {
             execute(message);
-            log.debug(message.getText());
+            log.debug("\n" + message.getText());
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }

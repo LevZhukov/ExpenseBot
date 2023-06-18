@@ -1,9 +1,9 @@
-package org.example.service;
+package org.example.service.callbackCreator;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public abstract class Callback {
+public abstract class AbstractCallback {
 
     protected String callbackText;
     protected Integer expenseId;

@@ -1,6 +1,6 @@
 package org.example.service.messageChanger;
 
-import org.example.service.CallbackData;
+import org.example.service.callbackCreator.CallbackData;
 import org.example.service.DBProcessor;
 import org.example.service.constants.ConstantReplyText;
 import org.springframework.stereotype.Component;
