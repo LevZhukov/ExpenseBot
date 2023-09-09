@@ -53,4 +53,9 @@ public class DBProcessor {
                         (s, s2) -> s.concat(s2));
         return allRecords;
     }
+
+    public String removeAll() {
+        expenseRepository.deleteAll();
+        return "Все записи о расходах были удалены";
+    }
 }
