@@ -7,22 +7,16 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-@Component("/show_all")
-public class ShowAll implements MessageGenerator {
-
-    @Autowired
-    private DBProcessor dbProcessor;
+@Component
+public class RemoveExpense implements MessageGenerator{
     @Autowired
     private SendMessage message;
-
+    @Autowired
+    DBProcessor dbProcessor;
     @Override
     public SendMessage generateMessage(Update update) {
-        String allExpenses = dbProcessor.showAll();
-        if (allExpenses.isEmpty()){
-            allExpenses = ConstantReplyText.NO_EXPESNES.getText();
-        }
-        message.setText(allExpenses);
-
+        String expense = update.getMessage().getText().substring(1);
+        message.setText(dbProcessor.removeExpense(expense) + expense);
         return message;
     }
 }

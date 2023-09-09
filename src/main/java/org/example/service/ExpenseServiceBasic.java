@@ -8,6 +8,7 @@ import org.example.service.keyboardCreator.KeyboardCreator;
 import org.example.service.messageChanger.MessageChanger;
 import org.example.service.messageGenerator.CustomMessage;
 import org.example.service.messageGenerator.MessageGenerator;
+import org.example.service.messageGenerator.RemoveExpense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -29,6 +30,8 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
     private Map<String, MessageChanger> mapChangedMessage;
     @Autowired
     private CustomMessage customMessage;
+    @Autowired
+    private RemoveExpense removeExpense;
 
     public ExpenseServiceBasic(CallbackFromString callbackFromString) {
         this.callbackFromString = callbackFromString;
@@ -38,6 +41,9 @@ public class ExpenseServiceBasic implements ExpenseServiceInterface {
         Message incomeMessage = update.getMessage();
 
         MessageGenerator messageGenerator = mapMessage.get(incomeMessage.getText());
+        if(messageGenerator == null && incomeMessage.getText().startsWith("#")){
+            messageGenerator = removeExpense;
+        }
         if(messageGenerator == null){
             messageGenerator = customMessage;
         }

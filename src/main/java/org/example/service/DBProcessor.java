@@ -3,6 +3,8 @@ package org.example.service;
 import lombok.extern.log4j.Log4j;
 import org.example.expense.Expense;
 import org.example.expense.ExpenseRepository;
+import org.example.service.constants.ConstantReplyText;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -57,5 +59,15 @@ public class DBProcessor {
     public String removeAll() {
         expenseRepository.deleteAll();
         return "Все записи о расходах были удалены";
+    }
+
+    public String removeExpense(String expense) {
+        try{
+            expenseRepository.deleteById(Integer.parseInt(expense));
+            return ConstantReplyText.EXPENSE_REMOVED.getText();
+        }
+        catch (EmptyResultDataAccessException e){
+            return ConstantReplyText.EXPENSE_NOT_FOUND.getText();
+        }
     }
 }
