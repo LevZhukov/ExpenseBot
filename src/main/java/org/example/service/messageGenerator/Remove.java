@@ -33,13 +33,16 @@ public class Remove implements MessageGenerator {
 
         CallbackData callbackData1 = callbackCreator.createCallback(ConstantReplyButton.PROCEED_WITH_REMOVE.getLabel(), 0, false);
         CallbackData callbackData2 = callbackCreator.createCallback(ConstantReplyButton.CHECK_NUMBER_BUTTON.getLabel(), 0, false);
+        CallbackData callbackData3 = callbackCreator.createCallback(ConstantReplyButton.REMOVE_ALL.getLabel(), 0, false);
 
         InlineKeyboardButton proceed = buttonCreator.createInlineButton(ConstantReplyButton.PROCEED_WITH_REMOVE.getLabel(), callbackData1.toString());
         InlineKeyboardButton checkNumber = buttonCreator.createInlineButton(ConstantReplyButton.CHECK_NUMBER_BUTTON.getLabel(), callbackData2.toString());
+        InlineKeyboardButton removeAll = buttonCreator.createInlineButton(ConstantReplyButton.REMOVE_ALL.getLabel(), callbackData2.toString());
 
         List<InlineKeyboardButton> listButtons = new ArrayList<>();
         listButtons.add(proceed);
         listButtons.add(checkNumber);
+        listButtons.add(removeAll);
 
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardCreator.createKeyboard(listButtons);
 

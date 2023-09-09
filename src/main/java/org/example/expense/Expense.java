@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Data
 public class Expense {
     @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
     private Double sum;
     private LocalDate date;
