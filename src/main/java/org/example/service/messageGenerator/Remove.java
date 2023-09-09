@@ -19,15 +19,16 @@ import java.util.List;
 @Component("/remove")
 public class Remove implements MessageGenerator {
     @Autowired
-    CallbackCreator callbackCreator;
+    private CallbackCreator callbackCreator;
     @Autowired
-    ButtonCreator buttonCreator;
+    private ButtonCreator buttonCreator;
     @Autowired
-    KeyboardCreator keyboardCreator;
+    private KeyboardCreator keyboardCreator;
+    @Autowired
+    private SendMessage message;
     @Override
     public SendMessage generateMessage(Update update) {
 
-        SendMessage message = new SendMessage();
         message.setText(ConstantReplyText.REMOVE_TEXT.getText());
 
         CallbackData callbackData1 = callbackCreator.createCallback(ConstantReplyButton.PROCEED_WITH_REMOVE.getLabel(), 0, false);

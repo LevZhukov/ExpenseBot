@@ -10,11 +10,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class ShowAll implements MessageGenerator {
 
     @Autowired
-    DBProcessor dbProcessor;
+    private DBProcessor dbProcessor;
+    @Autowired
+    private SendMessage message;
 
     @Override
     public SendMessage generateMessage(Update update) {
-        SendMessage message = new SendMessage();
         message.setText(dbProcessor.showAll());
         return message;
     }
